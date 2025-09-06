@@ -10,11 +10,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault()
-  const formData = new FormData(event.currentTarget)
-  const email = formData.get("email")
-  const password = formData.get("password")
+function onSubmit(){
+   
 }
 
 export function LoginForm({
@@ -31,10 +28,9 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={onSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
