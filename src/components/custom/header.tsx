@@ -33,20 +33,20 @@ export const Header = () => {
               className="flex items-center space-x-3"
             >
               <img
-                src="/nestnotes-logo.png"
-                alt="NestNotes logo"
+                src="/logo.png"
+                alt="Logo"
                 width={40}
                 height={40}
                 className="rounded-lg"
               />
               <span className="text-xl font-bold text-foreground">
-                NestNotes
+                Smart-trip
               </span>
             </a>
 
             <div className="flex items-center space-x-4">
               <a
-                href="https://github.com/Sharkyyyx28/notes-app"
+                href="https://github.com/Sharkyyyx28/Smart-trip"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-accent/50"
