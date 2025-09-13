@@ -7,11 +7,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Header } from './components/custom/header.tsx';
 import { Toaster } from 'sonner';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import ViewTrip from './components/view-trip/[tripId]/index.tsx';
 
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
   { path: "/create-trip", element: <CreateTrip /> },
+  { path: "/view-trip/:tripId", element: <ViewTrip /> },
 ]);
 
 createRoot(document.getElementById('root')!).render(

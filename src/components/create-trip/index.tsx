@@ -13,6 +13,9 @@ import {
 } from "../ui/dialog"; // ✅ only use shadcn dialog
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "../service/firebase";
+import { useNavigate } from "react-router-dom";
 
 function LoadingSpinner() {
   return (
@@ -21,6 +24,7 @@ function LoadingSpinner() {
 }
 
 export default function CreateTrip() {
+  const navigate = useNavigate();
   const [days, setDays] = useState("");
   const [budget, setBudget] = useState("");
   const [travelType, setTravelType] = useState("");
@@ -86,12 +90,15 @@ export default function CreateTrip() {
       Give me a Hotels options list with HotelName, Hotel address, Price, hotel image url, geo coordinates, 
       rating, descriptions and suggest itinerary with placeName, Place Details, Place Image Url, 
       Geo Coordinates, ticket Pricing, rating, Time travel each of the location for ${formData?.days} days 
-      with each day plan with best time to visit in JSON format.`;
+      with each day plan with best time to visit in JSON format.Return ONLY valid JSON with no backticks, markdown code fences, or commentary.
+`;
 
     try {
       setIsGenerating(true); // ✅ only affects "Generate Trip" button
       const result = await genAiResponse(Prompt);
       console.log("AI Response:", result);
+      SaveTrip(result);
+      toast.success("Trip Generated Successfully");
     } catch (error) {
       console.error("Error generating trip:", error);
       toast.error("Failed to generate trip");
@@ -100,14 +107,16 @@ export default function CreateTrip() {
     }
   };
 
-  // ✅ Get Google User Profile
   const getUserProfile = async (tokenInfo: { access_token: string }) => {
     try {
-      const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
-        headers: {
-          Authorization: `Bearer ${tokenInfo.access_token}`,
-        },
-      });
+      const res = await axios.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${tokenInfo.access_token}`,
+          },
+        }
+      );
 
       console.log("Google Profile:", res.data);
 
@@ -133,6 +142,27 @@ export default function CreateTrip() {
       setIsGoogleLoading(false);
     },
   });
+
+  function cleanJson(str: string) {
+    return str.replace(/```json|```/g, "").trim();
+  }
+
+  const SaveTrip = async (TripData: any) => {
+    const DocId = Date.now().toString();
+    const user = JSON.parse(localStorage.getItem("user")!);
+
+    const parsedTrip = JSON.parse(cleanJson(TripData)); // ✅ cleaned
+
+    await setDoc(doc(db, "trips", DocId), {
+      UserSelection: formData,
+      TripData: parsedTrip,
+      id: DocId,
+      userEmail: user.email,
+    });
+
+    toast.success("Trip Saved Successfully");
+    navigate(`/view-trip/${DocId}`);
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-8">
