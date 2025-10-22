@@ -85,13 +85,65 @@ export default function CreateTrip() {
       return;
     }
 
-    const Prompt = `Generate Travel Plan for Location : ${formData?.destination}, 
-      for ${formData?.days} Days for ${formData?.travelType} with a ${formData?.budget} budget.
-      Give me a Hotels options list with HotelName, Hotel address, Price, hotel image url, geo coordinates, 
-      rating, descriptions and suggest itinerary with placeName, Place Details, Place Image Url, 
-      Geo Coordinates, ticket Pricing, rating, Time travel each of the location for ${formData?.days} days 
-      with each day plan with best time to visit in JSON format.Return ONLY valid JSON with no backticks, markdown code fences, or commentary.
+    const Prompt = `
+Generate a travel plan in **strict JSON format** using the exact schema and key order shown below. 
+Do not include any markdown, code fences, comments, or extra text—only valid JSON.
+
+Required schema and order:
+
+{
+  "location": "string (destination name)",
+  "duration": "string (e.g. '3 Days')",
+  "targetAudience": "string (e.g. 'A Couple')",
+  "budget": "string (e.g. 'Cheap')",
+  "hotels": [
+    {
+      "hotelName": "string",
+      "hotelAddress": "string",
+      "pricePerNight": "string",
+      "hotelImageUrl": "string (URL)",
+      "geoCoordinates": {
+        "latitude": number,
+        "longitude": number
+      },
+      "rating": number,
+      "description": "string"
+    }
+  ],
+  "itinerary": [
+    {
+      "day": "string (e.g. 'Day 1')",
+      "theme": "string",
+      "date": "string",
+      "transportationTip": "string",
+      "plan": [
+        {
+          "placeName": "string",
+          "placeDetails": "string (in short sentence under 10-15 words)",
+          "placeImageUrl": "string (URL)",
+          "ticketPricing": "string(just numbers with currency symbol, Free , Varies)",
+          "suggestedTime": "string(e.g. '9:00 AM - 11:00 AM')",
+          "timeSpent": "string",
+          "bestTimeToVisit": "string"
+        }
+      ]
+    }
+  ]
+}
+
+Generate the content for:
+- Location: ${formData?.destination}
+- Duration: ${formData?.days} Days
+- Target Audience: ${formData?.travelType}
+- Budget: ${formData?.budget}
+
+Ensure:
+- All URLs are valid-looking placeholders if real ones aren't available.
+- All numbers (latitude, longitude, rating) are valid numeric types.
+- Follow the JSON key names and nesting **exactly** as above.
+- Return **only** the JSON object.
 `;
+
 
     try {
       setIsGenerating(true); // ✅ only affects "Generate Trip" button
