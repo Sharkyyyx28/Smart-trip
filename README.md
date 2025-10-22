@@ -20,11 +20,12 @@
 ---
 
 ## 📸 Screenshots
-(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/1.png)
-(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/3.png)
-(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/4.png)
-(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/5.png)
-(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/2.png)
+
+![Login Screen](https://github.com/Sharkyyyx28/Smart-trip/raw/main/public/1.png)
+![Generate Trip](https://github.com/Sharkyyyx28/Smart-trip/raw/main/public/3.png)
+![View Trip](https://github.com/Sharkyyyx28/Smart-trip/raw/main/public/4.png)
+![Another Feature](https://github.com/Sharkyyyx28/Smart-trip/raw/main/public/5.png)
+![Dashboard](https://github.com/Sharkyyyx28/Smart-trip/raw/main/public/2.png)
 
 ---
 
@@ -105,9 +106,3 @@ Contributions are welcome! Fork the repo, create a branch, and submit a pull req
 For questions, suggestions, or feedback, reach out via GitHub: [Sharkyyyx28](https://github.com/Sharkyyyx28)
 
 ---
-
-## 🌐 Live Demo (Optional)
-
-If you deploy your app, you can add a link here:  
-
-[View Live Demo](#)
