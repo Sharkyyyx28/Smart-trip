@@ -20,12 +20,11 @@
 ---
 
 ## 📸 Screenshots
-
-(public/1.png)
-(public/2.png)
-(public/3.png)
-(public/4.png)
-(public/5.png)
+(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/1.png)
+(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/3.png)
+(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/4.png)
+(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/5.png)
+(https://github.com/Sharkyyyx28/Smart-trip/blob/main/public/2.png)
 
 ---
 
