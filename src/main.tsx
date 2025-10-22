@@ -8,12 +8,14 @@ import { Header } from './components/custom/header.tsx';
 import { Toaster } from 'sonner';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ViewTrip from './components/view-trip/[tripId]/index.tsx';
+import MyTrips from './components/my-trip/index.tsx';
 
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
   { path: "/create-trip", element: <CreateTrip /> },
   { path: "/view-trip/:tripId", element: <ViewTrip /> },
+  { path: "/my-trips", element: <MyTrips /> },
 ]);
 
 createRoot(document.getElementById('root')!).render(

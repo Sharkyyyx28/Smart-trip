@@ -40,7 +40,7 @@ function ViewTrip() {
 
 
   return (
-    <div className="p-10 md:px-20 lg:px-44 xl:px-50">
+    <div className="p-10 md:px-20 lg:px-44 xl:px-60">
       <InfoSection trip={trip} />
       <HotelSection trip={trip} />
       <Itinerary trip={trip} />

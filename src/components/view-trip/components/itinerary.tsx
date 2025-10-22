@@ -18,7 +18,7 @@ function itinerary({ trip }: { trip: any }) {
                     to={`https://www.google.com/maps/search/?api=1&query=${place.placeName}`}
                     target="_blank"
                   >
-                    <div className="border rounded-xl p-4 flex gap-5 shadow hover:shadow-md transition-all cursor-pointer">
+                    <div className="border rounded-xl p-4 flex gap-5 shadow hover:scale-105 transition-all cursor-pointer">
                       <img
                         src={"/placeholder2.jpg"}
                         className="rounded-lg h-auto w-[130px] object-cover mb-2"

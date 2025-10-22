@@ -96,7 +96,7 @@ Required schema and order:
   "duration": "string (e.g. '3 Days')",
   "targetAudience": "string (e.g. 'A Couple')",
   "budget": "string (e.g. 'Cheap')",
-  "hotels": [
+  "hotels": (3-4 options)[
     {
       "hotelName": "string",
       "hotelAddress": "string",

@@ -122,7 +122,9 @@ export const Header = () => {
               <div className="flex items-center space-x-3">
                 {user ? (
                   <div className="flex items-center gap-3">
-                    <Button variant="outline">My trips</Button>
+                    <Button onClick={() => {window.location.href='/create-trip'}} variant="outline">+ Create trip</Button>
+                    <Button onClick={() => {window.location.href='/my-trips'}} variant="outline">My trips</Button>
+
                     <Popover>
                       <PopoverTrigger>
                         {" "}
