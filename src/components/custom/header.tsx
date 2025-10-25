@@ -26,16 +26,11 @@ export const Header = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  // ✅ store user in React state
-  const [user, setUser] = useState<any>(null);
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   useEffect(() => {
-    // load user from localStorage on mount
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+    console.log("User data from localStorage:", user);
+  }, [user]);
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latest) => {
@@ -46,16 +41,24 @@ export const Header = () => {
 
   const getUserProfile = async (tokenInfo: { access_token: string }) => {
     try {
-      const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
-        headers: { Authorization: `Bearer ${tokenInfo.access_token}` },
-      });
+      const res = await axios.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${tokenInfo.access_token}`,
+          },
+        }
+      );
 
-      // ✅ save and update immediately
+      console.log("Google Profile:", res.data);
+
+      // save user in localStorage
       localStorage.setItem("user", JSON.stringify(res.data));
-      setUser(res.data);
 
+      // close login dialog
       setOpenDialog(false);
       setIsGoogleLoading(false);
+      window.location.reload();
       toast.success(`Welcome ${res.data.name}!`);
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -71,33 +74,38 @@ export const Header = () => {
       setIsGoogleLoading(false);
     },
   });
-
   function LoadingSpinner() {
     return (
       <span className="inline-block animate-spin rounded-full border-2 border-gray-300 border-t-black h-5 w-5 mr-2" />
     );
   }
-
-  const handleLogout = () => {
-    googleLogout();
-    localStorage.clear();
-    setUser(null);
-    toast.success("Logged out successfully");
-  };
-
   return (
     <>
       <header
         className={cn(
           "fixed top-0 z-20 w-full border-b border-border/40 transition-all duration-300 ease-in-out",
-          scrolled ? "bg-background/80 backdrop-blur-md shadow-lg" : "bg-background/95"
+          scrolled
+            ? "bg-background/80 backdrop-blur-md shadow-lg"
+            : "bg-background/95"
         )}
       >
         <nav className="mx-auto px-6">
           <div className="flex items-center justify-between py-4">
-            <a href="/" className="flex items-center space-x-3">
-              <img src="/logo.png" alt="Logo" width={40} height={40} className="rounded-lg" />
-              <span className="text-xl font-bold text-foreground">Smart-trip</span>
+            <a
+              href="/"
+              aria-label="home"
+              className="flex items-center space-x-3"
+            >
+              <img
+                src="/logo.png"
+                alt="Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
+              <span className="text-xl font-bold text-foreground">
+                Smart-trip
+              </span>
             </a>
 
             <div className="flex items-center space-x-4">
@@ -111,76 +119,84 @@ export const Header = () => {
                 <Github className="h-5 w-5" />
               </a>
 
-              {user ? (
-                <div className="flex items-center gap-3">
-                  <Button onClick={() => (window.location.href = "/create-trip")} variant="outline">
-                    + Create trip
-                  </Button>
-                  <Button onClick={() => (window.location.href = "/my-trips")} variant="outline">
-                    My trips
-                  </Button>
+              <div className="flex items-center space-x-3">
+                {user ? (
+                  <div className="flex items-center gap-3">
+                    <Button onClick={() => {window.location.href='/create-trip'}} variant="outline">+ Create trip</Button>
+                    <Button onClick={() => {window.location.href='/my-trips'}} variant="outline">My trips</Button>
 
-                  <Popover>
-                    <PopoverTrigger>
-                      <img src={user?.picture} className="rounded-full w-8 h-8 cursor-pointer" />
-                    </PopoverTrigger>
-                    <PopoverContent className="bg-white">
-                      <h2
-                        className="cursor-pointer text-sm font-medium"
-                        onClick={handleLogout}
-                      >
-                        Logout
+                    <Popover>
+                      <PopoverTrigger>
+                        {" "}
+                        <img
+                          src={user?.picture}
+                          className="rounded-full w-8 h-8"
+                        />
+                      </PopoverTrigger>
+                      <PopoverContent className="bg-white">
+                        <h2
+                          className="cursor-pointer"
+                          onClick={() => {
+                            googleLogout();
+                            localStorage.clear();
+                            window.location.reload();
+                          }}
+                        >
+                          Logout
+                        </h2>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                ) : (
+                  <Button onClick={()=>{setOpenDialog(true)}} variant="outline" size="sm">
+                    Sign In
+                  </Button>
+                )}
+              </div>
+              <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                <DialogContent className="bg-white">
+                  <DialogHeader>
+                    <DialogTitle />
+                    <DialogDescription>
+                      <div className="flex justify-start items-center">
+                        <img src="logo.png" className="h-12 mr-2" />
+                        <span className="text-2xl font-bold ml-2">
+                          Smart Trip
+                        </span>
+                      </div>
+                      <h2 className="text-lg font-semibold mt-7 text-gray-800">
+                        Sign In Required
                       </h2>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              ) : (
-                <Button onClick={() => setOpenDialog(true)} variant="outline" size="sm">
-                  Sign In
-                </Button>
-              )}
+                      <p className="mt-2 text-gray-600">
+                        Please sign in with your Google account to generate a
+                        trip plan.
+                      </p>
+                      <Button
+                        onClick={() => {
+                          setIsGoogleLoading(true);
+                          login();
+                        }}
+                        className="w-full mt-5 bg-black text-white font-semibold hover:bg-gray-800 transition flex items-center justify-center"
+                      >
+                        {isGoogleLoading ? (
+                          <>
+                            <LoadingSpinner /> Signing in...
+                          </>
+                        ) : (
+                          <>
+                            <FcGoogle className="mr-2 text-xl" /> Sign in with
+                            Google
+                          </>
+                        )}
+                      </Button>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </nav>
       </header>
-
-      {/* Sign-in Dialog */}
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="bg-white">
-          <DialogHeader>
-            <DialogTitle />
-            <DialogDescription>
-              <div className="flex justify-start items-center">
-                <img src="logo.png" className="h-12 mr-2" />
-                <span className="text-2xl font-bold ml-2">Smart Trip</span>
-              </div>
-              <h2 className="text-lg font-semibold mt-7 text-gray-800">
-                Sign In Required
-              </h2>
-              <p className="mt-2 text-gray-600">
-                Please sign in with your Google account to generate a trip plan.
-              </p>
-              <Button
-                onClick={() => {
-                  setIsGoogleLoading(true);
-                  login();
-                }}
-                className="w-full mt-5 bg-black text-white font-semibold hover:bg-gray-800 transition flex items-center justify-center"
-              >
-                {isGoogleLoading ? (
-                  <>
-                    <LoadingSpinner /> Signing in...
-                  </>
-                ) : (
-                  <>
-                    <FcGoogle className="mr-2 text-xl" /> Sign in with Google
-                  </>
-                )}
-              </Button>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
 
       <div className="h-[72px]" />
     </>
