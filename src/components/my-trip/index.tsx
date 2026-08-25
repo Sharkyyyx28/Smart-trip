@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
-import { getSeededImageUrl } from "@/lib/image";
+import { SmartImage } from "../ui/smart-image";
 
 function MyTrips() {
   const navigate = useNavigate();
@@ -76,8 +76,11 @@ function MyTrips() {
           {userTrips.map((item: any, index: number) => (
             <Link to={`/view-trip/${item.id}`} key={index}>
               <div className="mt-5 rounded-lg hover:scale-105 transition-all cursor-pointer">
-                <img
-                  src={getSeededImageUrl(item.UserSelection?.destination, 400, 300)}
+                <SmartImage
+                  query={item.UserSelection?.destination}
+                  seed={item.UserSelection?.destination}
+                  width={400}
+                  height={300}
                   className="rounded-lg h-[220px] w-full object-cover mb-2"
                   alt={item.UserSelection?.destination}
                 />
