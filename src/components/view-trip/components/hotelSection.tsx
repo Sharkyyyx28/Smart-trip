@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getSeededImageUrl } from "@/lib/image";
+import { SmartImage } from "@/components/ui/smart-image";
 
 function StarRating({ rating }: { rating: number }) {
   const filled = Math.round(rating || 0);
@@ -23,6 +23,7 @@ function StarRating({ rating }: { rating: number }) {
 function HotelSection({ trip, loading }: { trip: any; loading?: boolean }) {
   const hotels = trip?.TripData?.hotels;
   const isLoading = loading || !trip;
+  const destination = trip?.UserSelection?.destination ?? "";
 
   return (
     <div>
@@ -47,8 +48,11 @@ function HotelSection({ trip, loading }: { trip: any; loading?: boolean }) {
                 key={index}
               >
                 <div className="rounded-lg p-2 hover:scale-105 transition-all cursor-pointer">
-                  <img
-                    src={getSeededImageUrl(`${item.hotelName}-hotel`, 400, 300)}
+                  <SmartImage
+                    query={`${item.hotelName}, ${destination}`}
+                    seed={`${item.hotelName}-hotel`}
+                    width={400}
+                    height={300}
                     className="rounded-lg h-40 w-full object-cover mb-2"
                     alt={item.hotelName}
                   />
