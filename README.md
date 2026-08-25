@@ -71,7 +71,30 @@ npm install -g pnpm       # Install pnpm globally if needed
 pnpm install              # Install project dependencies
 ```
 
-### 3. Run the Development Server
+### 3. Configure Environment Variables
+
+Create a local env file from the example and add your real keys:
+
+```bash
+# macOS/Linux
+cp .env.example .env.local
+
+# Windows PowerShell
+Copy-Item .env.example .env.local
+```
+
+Required variables:
+
+- `VITE_GEMINI_API_KEY`
+- `VITE_FIREBASE_API_KEY`
+- `VITE_FIREBASE_AUTH_DOMAIN`
+- `VITE_FIREBASE_PROJECT_ID`
+- `VITE_FIREBASE_STORAGE_BUCKET`
+- `VITE_FIREBASE_MESSAGING_SENDER_ID`
+- `VITE_FIREBASE_APP_ID`
+- `VITE_FIREBASE_MEASUREMENT_ID`
+
+### 4. Run the Development Server
 
 ```bash
 pnpm dev
