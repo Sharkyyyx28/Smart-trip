@@ -3,7 +3,7 @@ import { Share2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getSeededImageUrl } from "@/lib/image";
+import { SmartImage } from "@/components/ui/smart-image";
 
 function InfoSection({ trip, loading }: { trip: any; loading?: boolean }) {
   const [copied, setCopied] = useState(false);
@@ -41,8 +41,11 @@ function InfoSection({ trip, loading }: { trip: any; loading?: boolean }) {
   return (
     <div>
       <div className="relative">
-        <img
-          src={getSeededImageUrl(destination, 1200, 600)}
+        <SmartImage
+          query={destination}
+          seed={destination}
+          width={1200}
+          height={600}
           className="w-full h-90 object-cover rounded-lg mb-4"
           alt={destination}
         />
