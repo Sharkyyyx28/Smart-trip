@@ -80,7 +80,6 @@ function MyTrips() {
                   query={item.UserSelection?.destination}
                   seed={item.UserSelection?.destination}
                   width={400}
-                  height={300}
                   className="rounded-lg h-[220px] w-full object-cover mb-2"
                   alt={item.UserSelection?.destination}
                 />

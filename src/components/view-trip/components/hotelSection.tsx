@@ -52,7 +52,6 @@ function HotelSection({ trip, loading }: { trip: any; loading?: boolean }) {
                     query={`${item.hotelName}, ${destination}`}
                     seed={`${item.hotelName}-hotel`}
                     width={400}
-                    height={300}
                     className="rounded-lg h-40 w-full object-cover mb-2"
                     alt={item.hotelName}
                   />

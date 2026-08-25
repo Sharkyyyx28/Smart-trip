@@ -45,7 +45,6 @@ function InfoSection({ trip, loading }: { trip: any; loading?: boolean }) {
           query={destination}
           seed={destination}
           width={1200}
-          height={600}
           className="w-full h-90 object-cover rounded-lg mb-4"
           alt={destination}
         />
