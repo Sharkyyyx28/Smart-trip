@@ -65,7 +65,7 @@ function Itinerary({ trip, loading }: { trip: any; loading?: boolean }) {
                         seed={`${place.placeName}-landmark`}
                         width={200}
                         height={200}
-                        className="rounded-lg h-auto w-[130px] object-cover mb-2"
+                        className="rounded-lg h-[130px] w-[130px] object-cover shrink-0"
                         alt={place.placeName}
                       />
 
