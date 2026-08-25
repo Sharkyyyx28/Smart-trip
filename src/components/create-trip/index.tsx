@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Users, DollarSign, Heart, Home, User } from "lucide-react";
+import { Users, Heart, Home, User, Wallet, CreditCard, Gem } from "lucide-react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { genAiResponse } from "../service/AIModel";
 import { Button } from "../ui/button";
@@ -23,6 +24,13 @@ function LoadingSpinner() {
   );
 }
 
+type FormErrors = {
+  destination?: string;
+  days?: string;
+  budget?: string;
+  travelType?: string;
+};
+
 export default function CreateTrip() {
   const navigate = useNavigate();
   const [days, setDays] = useState("");
@@ -30,6 +38,7 @@ export default function CreateTrip() {
   const [travelType, setTravelType] = useState("");
   const [place, setPlace] = useState("");
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [openDialog, setOpenDialog] = useState(false);
 
   // ✅ separate loading states
@@ -59,11 +68,34 @@ export default function CreateTrip() {
   function handleInputChange(name: string, value: string) {
     const newFormData = { ...formData, [name]: value };
     setFormData(newFormData);
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
   }
 
   useEffect(() => {
     debouncedEffect(formData);
   }, [formData, debouncedEffect]);
+
+  function validateForm(): boolean {
+    const newErrors: FormErrors = {};
+
+    if (!formData?.destination?.trim()) {
+      newErrors.destination = "Please enter a destination.";
+    }
+    if (!formData?.days) {
+      newErrors.days = "Please enter the number of days.";
+    } else if (Number(formData.days) <= 0) {
+      newErrors.days = "Days must be at least 1.";
+    }
+    if (!formData?.budget) {
+      newErrors.budget = "Please select a budget.";
+    }
+    if (!formData?.travelType) {
+      newErrors.travelType = "Please select who you're traveling with.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
 
   // ✅ Generate Trip
   const generateTrip = async () => {
@@ -74,19 +106,19 @@ export default function CreateTrip() {
       return;
     }
 
-    if (
-      (Number(formData?.days) > 5 && !formData?.destination) ||
-      !formData?.budget ||
-      !formData?.travelType
-    ) {
-      toast.error(
-        "Please fill all the fields correctly. Days should be less than or equal to 5."
-      );
+    if (!validateForm()) {
+      toast.error("Please fill all the fields correctly.");
       return;
     }
 
+    if (Number(formData.days) > 5) {
+      toast.warning(
+        "Longer trips (over 5 days) may take a little longer to generate — thanks for your patience!"
+      );
+    }
+
     const Prompt = `
-Generate a travel plan in **strict JSON format** using the exact schema and key order shown below. 
+Generate a travel plan in **strict JSON format** using the exact schema and key order shown below.
 Do not include any markdown, code fences, comments, or extra text—only valid JSON.
 
 Required schema and order:
@@ -234,13 +266,18 @@ Ensure:
         <input
           type="text"
           placeholder="Ex. Paris, France"
-          className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+          className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 ${
+            errors.destination ? "border-red-500" : ""
+          }`}
           value={place}
-          onChange={(e) => (
-            setPlace(e.target.value),
-            handleInputChange("destination", e.target.value)
-          )}
+          onChange={(e) => {
+            setPlace(e.target.value);
+            handleInputChange("destination", e.target.value);
+          }}
         />
+        {errors.destination && (
+          <p className="text-red-500 text-sm mt-1">{errors.destination}</p>
+        )}
       </div>
 
       {/* Days */}
@@ -251,12 +288,23 @@ Ensure:
         <input
           type="number"
           placeholder="Ex. 5"
+          min={1}
           value={days}
-          onChange={(e) => (
-            setDays(e.target.value), handleInputChange("days", e.target.value)
-          )}
-          className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+          onChange={(e) => {
+            setDays(e.target.value);
+            handleInputChange("days", e.target.value);
+          }}
+          className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 ${
+            errors.days ? "border-red-500" : ""
+          }`}
         />
+        {errors.days ? (
+          <p className="text-red-500 text-sm mt-1">{errors.days}</p>
+        ) : Number(days) > 5 ? (
+          <p className="text-amber-600 text-sm mt-1">
+            Longer trips take a bit more time to generate — thanks for your patience!
+          </p>
+        ) : null}
       </div>
 
       {/* Budget */}
@@ -264,29 +312,41 @@ Ensure:
         <label className="block font-semibold mb-4">What is Your Budget?</label>
         <div className="grid grid-cols-3 gap-4">
           {[
-            { key: "Cheap", desc: "Stay conscious of costs", icon: DollarSign },
+            { key: "Cheap", desc: "Stay conscious of costs", icon: Wallet },
             {
               key: "Moderate",
               desc: "Keep cost on the average side",
-              icon: DollarSign,
+              icon: CreditCard,
             },
-            { key: "Luxury", desc: "Don’t worry about cost", icon: DollarSign },
+            { key: "Luxury", desc: "Don’t worry about cost", icon: Gem },
           ].map((item) => (
-            <button
+            <motion.button
               key={item.key}
-              onClick={() => (
-                setBudget(item.key), handleInputChange("budget", item.key)
-              )}
-              className={`border rounded-xl p-4 text-left shadow-sm hover:shadow-md transition ${
-                budget === item.key ? "border-blue-500 bg-blue-50" : ""
+              type="button"
+              onClick={() => {
+                setBudget(item.key);
+                handleInputChange("budget", item.key);
+              }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              animate={{ scale: budget === item.key ? 1.03 : 1 }}
+              className={`border rounded-xl p-4 text-left shadow-sm hover:shadow-md transition-shadow ${
+                budget === item.key
+                  ? "border-blue-500 bg-blue-50"
+                  : errors.budget
+                  ? "border-red-300"
+                  : ""
               }`}
             >
               <item.icon className="mb-2" />
               <h3 className="font-semibold">{item.key}</h3>
               <p className="text-sm text-gray-600">{item.desc}</p>
-            </button>
+            </motion.button>
           ))}
         </div>
+        {errors.budget && (
+          <p className="text-red-500 text-sm mt-2">{errors.budget}</p>
+        )}
       </div>
 
       {/* Travel Type */}
@@ -305,22 +365,33 @@ Ensure:
             },
             { key: "Friends", desc: "A bunch of thrill-seekers", icon: Users },
           ].map((item) => (
-            <button
+            <motion.button
               key={item.key}
-              onClick={() => (
-                setTravelType(item.key),
-                handleInputChange("travelType", item.key)
-              )}
-              className={`border rounded-xl p-4 text-left shadow-sm hover:shadow-md transition ${
-                travelType === item.key ? "border-blue-500 bg-blue-50" : ""
+              type="button"
+              onClick={() => {
+                setTravelType(item.key);
+                handleInputChange("travelType", item.key);
+              }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              animate={{ scale: travelType === item.key ? 1.03 : 1 }}
+              className={`border rounded-xl p-4 text-left shadow-sm hover:shadow-md transition-shadow ${
+                travelType === item.key
+                  ? "border-blue-500 bg-blue-50"
+                  : errors.travelType
+                  ? "border-red-300"
+                  : ""
               }`}
             >
               <item.icon className="mb-2" />
               <h3 className="font-semibold">{item.key}</h3>
               <p className="text-sm text-gray-600">{item.desc}</p>
-            </button>
+            </motion.button>
           ))}
         </div>
+        {errors.travelType && (
+          <p className="text-red-500 text-sm mt-2">{errors.travelType}</p>
+        )}
       </div>
 
       {/* Submit */}
