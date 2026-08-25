@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { Navigation } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getSeededImageUrl } from "@/lib/image";
+import { SmartImage } from "@/components/ui/smart-image";
 
 function Itinerary({ trip, loading }: { trip: any; loading?: boolean }) {
   const isLoading = loading || !trip;
   const days = trip?.TripData?.itinerary;
+  const destination = trip?.UserSelection?.destination ?? "";
 
   if (isLoading) {
     return (
@@ -59,8 +60,11 @@ function Itinerary({ trip, loading }: { trip: any; loading?: boolean }) {
                     target="_blank"
                   >
                     <div className="border rounded-xl p-4 flex gap-5 shadow hover:scale-105 transition-all cursor-pointer">
-                      <img
-                        src={getSeededImageUrl(`${place.placeName}-landmark`, 200, 200)}
+                      <SmartImage
+                        query={`${place.placeName}, ${destination}`}
+                        seed={`${place.placeName}-landmark`}
+                        width={200}
+                        height={200}
                         className="rounded-lg h-auto w-[130px] object-cover mb-2"
                         alt={place.placeName}
                       />
