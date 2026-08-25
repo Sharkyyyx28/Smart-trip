@@ -1,13 +1,14 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyC-ck6N_PwoyXrtaG3AY-lmljCGo3k9TcA",
-  authDomain: "smart-trip-5373b.firebaseapp.com",
-  projectId: "smart-trip-5373b",
-  storageBucket: "smart-trip-5373b.firebasestorage.app",
-  messagingSenderId: "330552946368",
-  appId: "1:330552946368:web:4742633fed614205e40725",
-  measurementId: "G-YC6D31968B",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
