@@ -51,15 +51,16 @@ function Itinerary({ trip, loading }: { trip: any; loading?: boolean }) {
             <p className="text-sm font-medium text-gray-600 mb-5">Theme: {item.theme}</p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {item?.plan?.map((place: any, idx: number) => (
-                <div key={idx}>
+                <div key={idx} className="h-full flex flex-col">
                   <div className="font-medium text-sm mb-3 text-orange-600">
                     {place.suggestedTime}
                   </div>
                   <Link
                     to={`https://www.google.com/maps/search/?api=1&query=${place.placeName}`}
                     target="_blank"
+                    className="flex-1"
                   >
-                    <div className="border rounded-xl p-4 flex gap-5 shadow hover:scale-105 transition-all cursor-pointer">
+                    <div className="border rounded-xl p-4 flex gap-5 shadow hover:scale-105 transition-all cursor-pointer h-full">
                       <SmartImage
                         query={`${place.placeName}, ${destination}`}
                         seed={`${place.placeName}-landmark`}
